@@ -1,0 +1,283 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1>Dear {{ request.user }}, Welcome to your account.</h1>
+{% if request.user.is_superuser %}
+<h4>You'll be updated of any intrusion, please stay online!</h4>
+<p id="ids_data">Data Will Be Displayed Here</p>
+
+<script>
+    function detect() {
+
+        $.ajax({
+            url: "{% url 'fetch' %}",
+            type: 'GET',
+        }).done(function (response) {
+            var data =
+                "Intruded Accounts : <br/> <table class='table table-bordered'><tr><th>ID</th><th>User</th><th>Date</th><th>Action</th></tr> ";
+            var json_data = JSON.parse(response);
+            var sn = 0;
+            for (key in json_data) {
+                sn++;
+                user = json_data[key]['user'];
+                date = json_data[key]['date'];
+                id = parseInt(json_data[key]['id']);
+                auto = parseInt(json_data[key]['auto'])
+                if (auto == 1) {
+                    //Page Reload
+                    location.reload();
+                }
+                block = "/block/" + id + "/";
+                ignore = "/ignore/" + id + "/";
+                data += "<tr><td>" + sn + "</td><td>" + user + "</td><td>" + date +
+                    "</td><td><a class='btn btn-danger'  href='" + block +
+                    "'>Block</a> || <a class='btn btn-info'  href='" + ignore +
+                    "'>Ignore</a> </td></tr>"
+            }
+            data += "</table>";
+            $("#ids_data").html(data)
+        }).fail(function (response) {
+            //   $("<span class='alert alert-warning'>Failed To Fetch Data</span>").insertAfter("#ids_data");
+        })
+    }
+    setInterval(detect, 5000);
+</script>
+<hr>
+<hr>
+<hr>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Date Joined</th>
+    </tr>
+    {% for user in users %}
+
+    {% if user.is_active %}
+
+    <tr class="alert-success">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ user }}</td>
+        <td>{{ user.date_joined }}</td>
+    </tr>
+    {% else %}
+
+    <tr class="alert-danger  font-italic">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ user }}</td>
+        <td>{{ user.date_joined }}</td>
+    </tr>
+    {% endif %}
+
+    {% endfor %}
+</table>
+{% else %}
+{% if registered %}
+<h3>You have completed your course registration</h3>
+<!-- Print Course Form -->
+
+            <form action="{% url 'submit' %}" method="POST">
+{% csrf_token %}
+                <div class="row">
+                    <div class="col-50">
+                    <div style="overflow-x:auto;">
+                    
+    <table>
+        <tr>
+            <th>S/No.</th>
+            <th>Course<br>code</th>
+            <th>Course Title</th>
+            <th>Unit</th>
+            <th>Status</th>
+            <th>Reg.<br>Status</th>
+            
+        </tr>
+     
+     </tr>
+        {% for reg in first  %}
+        <tr>
+      
+          <td>{{ forloop.counter }}</td>
+          <td>{{ reg.course.code }}</td>
+          <td>{{ reg.course.name }}</td>
+          <td>{{ reg.course.unit }}</td>
+          <td>{% if reg.course.elective %}
+            E
+            {% else %}
+            C
+            {% endif %}
+
+          </td>
+          <td>Normal</td>
+          
+      </tr>
+        {% endfor %}
+     
+
+        <tr>
+            <td style="border-right:none;background-color:darkblue; "></td>
+            <td style="border-right:none;background-color:darkblue; "></td>
+            <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+            <td><b>{{ fsum }}</b></td>
+            <td></td>
+        </tr> 
+    </table>
+</div>
+
+                    </div>
+
+                    <div class="col-50">
+                    <div style="overflow-x:auto;">
+    <table>
+        <tr>
+            <th>S/No.</th>
+            <th>Course<br>code</th>
+            <th>Course Title</th>
+            <th>Unit</th>
+            <th>Status</th>
+            <th>Reg.<br>Status</th>
+            
+            {% for reg in second  %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reg.course.code }}</td>
+              <td>{{ reg.course.name }}</td>
+              <td>{{ reg.course.unit }}</td>
+              <td>{% if reg.course.elective %}
+                E
+                {% else %}
+                C
+                {% endif %}
+
+              </td>
+              <td>Normal</td>
+              
+          </tr>
+            {% endfor %}
+     
+    
+            <tr>
+                <td style="border-right:none;background-color:darkblue; "></td>
+                <td style="border-right:none;background-color:darkblue; "></td>
+                <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+                <td><b>{{ ssum }}</b></td>
+                <td></td>
+            </tr> 
+    </table>
+    
+   </div></div></div></form>
+{% else %}
+  <!-- Display Course Form -->
+  <h3>Please, select your courses for the session.</h3>
+  <form action="{% url 'submit' %}" method="POST">
+    {% csrf_token %}
+                        <div class="row">
+                            <div class="col-50">
+                            <div style="overflow-x:auto;">
+                            
+            <table>
+                <tr>
+                    <th></th>
+                    <th>S/No.</th>
+                    <th>Course<br>code</th>
+                    <th>Course Title</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                    <th>Reg.<br>Status</th>
+                    
+                </tr>
+                
+             
+                {% for course in first  %}
+                <tr>
+                  <td><input type="checkbox" name="course[]" class='first' onclick="handleClick(this);" value='{{ course.id }}' id=""></td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ course.code }}</td>
+                  <td>{{ course.name }}</td>
+                  <td>{{ course.unit }}</td>
+                  <td>{% if course.elective %}
+                    E
+                    {% else %}
+                    C
+                    {% endif %}
+    
+                  </td>
+                  <td>Normal</td>
+                  
+              </tr>
+                {% endfor %}
+             
+    <!-- 
+                <tr>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+                    <td><b>23</b></td>
+                    <td>C</td>
+                    <td></td>
+                </tr> -->
+            </table>
+        </div>
+    
+                            </div>
+    
+                            <div class="col-50">
+                            <div style="overflow-x:auto;">
+            <table>
+                <tr>
+                  <th></th>
+                    <th>S/No.</th>
+                    <th>Course<br>code</th>
+                    <th>Course Title</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                    <th>Reg.<br>Status</th>
+                    
+                    {% for course in second  %}
+                    <tr>
+                      <td><input type="checkbox" name="course[]" class='first' onclick="handleClick(this);" value='{{ course.id }}' id=""></td>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ course.code }}</td>
+                      <td>{{ course.name }}</td>
+                      <td>{{ course.unit }}</td>
+                      <td>{% if course.elective %}
+                        E
+                        {% else %}
+                        C
+                        {% endif %}
+        
+                      </td>
+                      <td>Normal</td>
+                      
+                  </tr>
+                    {% endfor %}
+             
+             
+                <!-- <tr>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+                    <td><b>24</b></td>
+                    <td>C</td>
+                    <td></td>
+                </tr> -->
+            </table>
+            
+           
+        </div>
+        
+    
+                            </div>
+    
+                          </div>
+                         <div align='center'> <hr><input type="submit" value="Proceed"></div>
+          
+                    </form>
+{% endif %}
+
+<h1>Thanks for login in!</h1>
+{% endif %}
+<a href="{% url 'logout' %}" onclick="return confirm('You sure you wish to log out ?')"
+    class="btn btn-danger">Logout</a>
+
+{% endblock content %}
