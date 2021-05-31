@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
-<h1>Dear {{ request.user }}, Welcome to your account.</h1>
+<h1>Dear {{ request.user }}, welcome to your account.</h1>
 {% if request.user.is_superuser %}
 <h4>You'll be updated of any intrusion, please stay online!</h4>
 <p id="ids_data">Data Will Be Displayed Here</p>
@@ -72,6 +72,7 @@
     {% endfor %}
 </table>
 {% else %}
+<!-- Start Of Student -->
 {% if registered %}
 <h3>You have completed your course registration</h3>
 <!-- Print Course Form -->
@@ -274,8 +275,8 @@
           
                     </form>
 {% endif %}
-
-<h1>Thanks for login in!</h1>
+<br><hr>
+<!-- <h1>Thanks for login in!</h1> -->
 {% endif %}
 <a href="{% url 'logout' %}" onclick="return confirm('You sure you wish to log out ?')"
     class="btn btn-danger">Logout</a>

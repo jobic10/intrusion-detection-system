@@ -1,0 +1,115 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="col-50">
+    <table class="table table-bordered">
+        <tr>
+            <th>Name</th> <td>{{ request.user.last_name }}, {{ request.user.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Email</th> <td>{{ request.user.email }}</td>
+        </tr>
+        <tr>
+            <th>Department</th> <td>Computer Science</td>
+        </tr>
+        <tr>
+            <th>Level</th> <td>400 L</td>
+        </tr>
+     </table> 
+</div>  
+
+                    <div class="row">
+
+                       
+                        <div class="col-50">
+                        <div style="overflow-x:auto;">
+        <table class="table table-bordered">
+         <tr>
+             <td colspan="6" class="text-center alert-success">First Semester</td>
+         </tr>
+            <tr>
+                <th>S/No.</th>
+                <th>Course<br>code</th>
+                <th>Course Title</th>
+                <th>Unit</th>
+                <th>Status</th>
+                <th>Reg.<br>Status</th>
+                
+            </tr>
+         
+         </tr>
+            {% for reg in first  %}
+            <tr>
+          
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reg.course.code }}</td>
+              <td>{{ reg.course.name }}</td>
+              <td>{{ reg.course.unit }}</td>
+              <td>{% if reg.course.elective %}
+                E
+                {% else %}
+                C
+                {% endif %}
+    
+              </td>
+              <td>Normal</td>
+              
+          </tr>
+            {% endfor %}
+         
+    
+            <tr>
+                <td style="border-right:none;background-color:darkblue; "></td>
+                <td style="border-right:none;background-color:darkblue; "></td>
+                <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+                <td><b>{{ fsum }}</b></td>
+                <td></td>
+            </tr> 
+        </table>
+    </div>
+    
+                        </div>
+    
+                        <div class="col-50">
+                        <div style="overflow-x:auto;">
+        <table class='table table-bordered'>
+            <tr>
+                <td colspan="6" class="text-center alert-success">Second Semester</td>
+            </tr>
+            <tr>
+                <th>S/No.</th>
+                <th>Course<br>code</th>
+                <th>Course Title</th>
+                <th>Unit</th>
+                <th>Status</th>
+                <th>Reg.<br>Status</th>
+                
+                {% for reg in second  %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ reg.course.code }}</td>
+                  <td>{{ reg.course.name }}</td>
+                  <td>{{ reg.course.unit }}</td>
+                  <td>{% if reg.course.elective %}
+                    E
+                    {% else %}
+                    C
+                    {% endif %}
+    
+                  </td>
+                  <td>Normal</td>
+                  
+              </tr>
+                {% endfor %}
+         
+        
+                <tr>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; "></td>
+                    <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
+                    <td><b>{{ ssum }}</b></td>
+                    <td></td>
+                </tr> 
+        </table>
+        
+       </div></div></div>
+{% endblock content %}
