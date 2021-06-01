@@ -165,3 +165,11 @@ def print_form(request):
         context['registered'] = check
 
     return render(request, "print.html", context)
+
+
+def reg_form(request):
+    context = {
+        'first': Course.objects.filter(sem='1st'),
+        'second': Course.objects.filter(sem='2nd')
+    }
+    return render(request, "course_reg.html", context)
