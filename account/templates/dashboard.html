@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
-<h1>Dear {{ request.user }}, Welcome to your account.</h1>
+<h1>Dear {{ request.user }}, welcome to your account.</h1>
 {% if request.user.is_superuser %}
 <h4>You'll be updated of any intrusion, please stay online!</h4>
 <p id="ids_data">Data Will Be Displayed Here</p>
@@ -72,210 +72,22 @@
     {% endfor %}
 </table>
 {% else %}
+<!-- Start Of Student -->
+
 {% if registered %}
+
 <h3>You have completed your course registration</h3>
+
 <!-- Print Course Form -->
 
-            <form action="{% url 'submit' %}" method="POST">
-{% csrf_token %}
-                <div class="row">
-                    <div class="col-50">
-                    <div style="overflow-x:auto;">
-                    
-    <table>
-        <tr>
-            <th>S/No.</th>
-            <th>Course<br>code</th>
-            <th>Course Title</th>
-            <th>Unit</th>
-            <th>Status</th>
-            <th>Reg.<br>Status</th>
-            
-        </tr>
-     
-     </tr>
-        {% for reg in first  %}
-        <tr>
-      
-          <td>{{ forloop.counter }}</td>
-          <td>{{ reg.course.code }}</td>
-          <td>{{ reg.course.name }}</td>
-          <td>{{ reg.course.unit }}</td>
-          <td>{% if reg.course.elective %}
-            E
-            {% else %}
-            C
-            {% endif %}
-
-          </td>
-          <td>Normal</td>
-          
-      </tr>
-        {% endfor %}
-     
-
-        <tr>
-            <td style="border-right:none;background-color:darkblue; "></td>
-            <td style="border-right:none;background-color:darkblue; "></td>
-            <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
-            <td><b>{{ fsum }}</b></td>
-            <td></td>
-        </tr> 
-    </table>
-</div>
-
-                    </div>
-
-                    <div class="col-50">
-                    <div style="overflow-x:auto;">
-    <table>
-        <tr>
-            <th>S/No.</th>
-            <th>Course<br>code</th>
-            <th>Course Title</th>
-            <th>Unit</th>
-            <th>Status</th>
-            <th>Reg.<br>Status</th>
-            
-            {% for reg in second  %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ reg.course.code }}</td>
-              <td>{{ reg.course.name }}</td>
-              <td>{{ reg.course.unit }}</td>
-              <td>{% if reg.course.elective %}
-                E
-                {% else %}
-                C
-                {% endif %}
-
-              </td>
-              <td>Normal</td>
-              
-          </tr>
-            {% endfor %}
-     
-    
-            <tr>
-                <td style="border-right:none;background-color:darkblue; "></td>
-                <td style="border-right:none;background-color:darkblue; "></td>
-                <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
-                <td><b>{{ ssum }}</b></td>
-                <td></td>
-            </tr> 
-    </table>
-    
-   </div></div></div></form>
+     <a href="{% url 'print_form' %}" class="btn btn-info">Print Course Form</a>
 {% else %}
   <!-- Display Course Form -->
   <h3>Please, select your courses for the session.</h3>
-  <form action="{% url 'submit' %}" method="POST">
-    {% csrf_token %}
-                        <div class="row">
-                            <div class="col-50">
-                            <div style="overflow-x:auto;">
-                            
-            <table>
-                <tr>
-                    <th></th>
-                    <th>S/No.</th>
-                    <th>Course<br>code</th>
-                    <th>Course Title</th>
-                    <th>Unit</th>
-                    <th>Status</th>
-                    <th>Reg.<br>Status</th>
-                    
-                </tr>
-                
-             
-                {% for course in first  %}
-                <tr>
-                  <td><input type="checkbox" name="course[]" class='first' onclick="handleClick(this);" value='{{ course.id }}' id=""></td>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ course.code }}</td>
-                  <td>{{ course.name }}</td>
-                  <td>{{ course.unit }}</td>
-                  <td>{% if course.elective %}
-                    E
-                    {% else %}
-                    C
-                    {% endif %}
-    
-                  </td>
-                  <td>Normal</td>
-                  
-              </tr>
-                {% endfor %}
-             
-    <!-- 
-                <tr>
-                    <td style="border-right:none;background-color:darkblue; "></td>
-                    <td style="border-right:none;background-color:darkblue; "></td>
-                    <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
-                    <td><b>23</b></td>
-                    <td>C</td>
-                    <td></td>
-                </tr> -->
-            </table>
-        </div>
-    
-                            </div>
-    
-                            <div class="col-50">
-                            <div style="overflow-x:auto;">
-            <table>
-                <tr>
-                  <th></th>
-                    <th>S/No.</th>
-                    <th>Course<br>code</th>
-                    <th>Course Title</th>
-                    <th>Unit</th>
-                    <th>Status</th>
-                    <th>Reg.<br>Status</th>
-                    
-                    {% for course in second  %}
-                    <tr>
-                      <td><input type="checkbox" name="course[]" class='first' onclick="handleClick(this);" value='{{ course.id }}' id=""></td>
-                      <td>{{ forloop.counter }}</td>
-                      <td>{{ course.code }}</td>
-                      <td>{{ course.name }}</td>
-                      <td>{{ course.unit }}</td>
-                      <td>{% if course.elective %}
-                        E
-                        {% else %}
-                        C
-                        {% endif %}
-        
-                      </td>
-                      <td>Normal</td>
-                      
-                  </tr>
-                    {% endfor %}
-             
-             
-                <!-- <tr>
-                    <td style="border-right:none;background-color:darkblue; "></td>
-                    <td style="border-right:none;background-color:darkblue; "></td>
-                    <td style="border-right:none;background-color:darkblue; color:white; text-align:right;font-size: 17px; ">Total</td>
-                    <td><b>24</b></td>
-                    <td>C</td>
-                    <td></td>
-                </tr> -->
-            </table>
-            
-           
-        </div>
-        
-    
-                            </div>
-    
-                          </div>
-                         <div align='center'> <hr><input type="submit" value="Proceed"></div>
-          
-                    </form>
+ <a href="{% url 'reg_form' %}" class="btn btn-info">Course Registration</a>
 {% endif %}
-
-<h1>Thanks for login in!</h1>
+<br><hr>
+<!-- <h1>Thanks for login in!</h1> -->
 {% endif %}
 <a href="{% url 'logout' %}" onclick="return confirm('You sure you wish to log out ?')"
     class="btn btn-danger">Logout</a>

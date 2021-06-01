@@ -12,4 +12,6 @@ urlpatterns = [
     path('block/<int:id>/', views.block, name='block'),
     path('ignore/<int:id>/', views.ignore, name='ignore'),
     path("submit/", views.submit, name='submit'),
+    path("course/print", views.print_form, name='print_form'),
+    path("course/registration", views.reg_form, name='reg_form'),
 ]
