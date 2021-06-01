@@ -144,3 +144,24 @@ def submit(request):
     student.save()
     messages.success(request, "Course registration completed.")
     return redirect(reverse('dashboard'))
+
+
+def print_form(request):
+    check = Registration.objects.filter(student=request.user).exists()
+    if request.user.is_authenticated:
+        context = {'first': Course.objects.filter(
+            sem='1st'), 'second': Course.objects.filter(sem='2nd')}
+        if not request.user.is_superuser and check:
+            first = Registration.objects.filter(
+                student=request.user, course__sem='1st')
+            second = Registration.objects.filter(
+                student=request.user, course__sem='2nd')
+            f = first.aggregate(Sum('course__unit'))
+            s = second.aggregate(Sum('course__unit'))
+            fsum = f['course__unit__sum']
+            ssum = s['course__unit__sum']
+            context = {
+                'first': first, 'fsum': fsum, 'ssum': ssum, 'second': second}
+        context['registered'] = check
+
+    return render(request, "print.html", context)
